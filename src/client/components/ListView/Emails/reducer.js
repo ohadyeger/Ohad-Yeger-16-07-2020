@@ -10,10 +10,13 @@ const EmailsReducer = (state = initialState.emails, action) => {
 
     case EmailsActionsConstants.EMAILS_LOAD_FAIL:
       console.log("email load failed");
+      state = state.set("deleteFail", true);
       return state;
     case EmailsActionsConstants.REMOVE_EMAIL_SUCC:
       console.log(action);
       state = state.set("emails", action.emails);
+      state = state.set("deleteSucc", true);
+
       console.log("Reducer: email removed");
       // state = state.set("emails", action.emails);
       return state;

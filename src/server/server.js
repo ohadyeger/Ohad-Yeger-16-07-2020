@@ -5,26 +5,24 @@ const fs = require("fs");
 const path = require("path");
 const cookieParser = require("cookie-parser");
 const dbName = "soos-dev";
-const UserModel = require("./model/User");
-
+// const UserModel = require("./model/User");
 
 const config = {
   mongoURL: process.env.MONGO_URL || "mongodb://localhost:27017/" + dbName,
-  port: 8000
+  port: 8000,
 };
 
 //setup database
 mongoose.Promise = global.Promise;
 // MongoDB Connection
 if (process.env.NODE_ENV !== "test") {
-  mongoose.connect(config.mongoURL, { useNewUrlParser: true }, error => {
+  mongoose.connect(config.mongoURL, { useNewUrlParser: true }, (error) => {
     if (error) {
       console.error("Please make sure Mongodb is installed and running!");
       throw error;
     } else console.log("connected to database!");
   });
 }
-
 
 const app = express();
 
@@ -36,7 +34,7 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use(cookieParser());
 
 // Add backend api routes
-fs.readdirSync(__dirname + "/api").forEach(file => {
+fs.readdirSync(__dirname + "/api").forEach((file) => {
   file.indexOf(".") >= 0
     ? require(`./api/${file.substr(0, file.indexOf("."))}`)(app)
     : false;

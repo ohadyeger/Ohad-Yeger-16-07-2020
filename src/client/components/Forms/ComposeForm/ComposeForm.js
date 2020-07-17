@@ -8,6 +8,7 @@ import {
   Button,
   Menu,
   Input,
+  Message,
 } from "semantic-ui-react";
 import { connect } from "react-redux";
 import ComposeFormActions from "./actions";
@@ -23,6 +24,8 @@ class ComposeForm extends React.Component {
       message: "",
       senderId: -1,
       receiverId: -1,
+      submitSucc: false,
+      submitFail: false,
     };
 
     this.handleSubjectChange = this.handleSubjectChange.bind(this);
@@ -71,55 +74,81 @@ class ComposeForm extends React.Component {
       receiverId: this.state.receiverId,
     };
     this.props.submitNewEmail(email);
-    this.resetForm();
+    // this.resetForm();
     console.log("submitted new email");
   }
 
   render() {
     return (
       <React.Fragment>
-        <Segment>
-          <Form onSubmit={this.handleSubmit}>
-            <Form.Group widths="equal">
-              <Form.Input
-                type="number"
-                fluid
-                label="Sender ID"
-                placeholder="to"
-                error={this.state.senderId < 1}
-                onChange={this.handleSenderIdChange}
-                value={this.state.senderId}
-              />
-              <Form.Input
-                type="number"
-                fluid
-                label="Receiver ID"
-                placeholder="from"
-                error={this.state.receiverId < 1}
-                onChange={this.handleReceiverIdChange}
-                value={this.state.receiverId}
-              />
-            </Form.Group>
-            <Form.Group widths="equal">
-              <Form.Input
-                fluid
-                label="subject"
-                placeholder="subject"
-                error={this.state.subject == ""}
-                onChange={this.handleSubjectChange}
-                value={this.state.subject}
-              />
-            </Form.Group>
-            <Form.TextArea
-              label="Message"
-              placeholder="compose your message here..."
-              style={{ minHeight: 100 }}
-              onChange={this.handleContentChange}
-              value={this.state.message}
-              rows={5}
-              error={this.state.message == ""}
-            />
-            {/* <Form.Field>
+        <Grid columns="three" divided centered>
+          <Grid.Row>
+            {/* <Grid.Column></Grid.Column> */}
+            <Grid.Column>
+              <Segment>
+                {this.props.submitSucc ? (
+                  <Message positive>
+                    <Message.Header>
+                      New Message Submitted Successfully
+                    </Message.Header>
+                    <p>
+                      Go to your <b>Manage Emails Page</b> to see your message.
+                    </p>
+                  </Message>
+                ) : (
+                  []
+                )}
+                {this.props.submitFail ? (
+                  <Message negative>
+                    <Message.Header>
+                      New Message Submission Failed
+                    </Message.Header>
+                    <p>Please try again later.</p>
+                  </Message>
+                ) : (
+                  []
+                )}
+                <Form onSubmit={this.handleSubmit}>
+                  <Form.Group widths="equal">
+                    <Form.Input
+                      type="number"
+                      fluid
+                      label="Sender ID"
+                      placeholder="to"
+                      error={this.state.senderId < 1}
+                      onChange={this.handleSenderIdChange}
+                      value={this.state.senderId}
+                    />
+                    <Form.Input
+                      type="number"
+                      fluid
+                      label="Receiver ID"
+                      placeholder="from"
+                      error={this.state.receiverId < 1}
+                      onChange={this.handleReceiverIdChange}
+                      value={this.state.receiverId}
+                    />
+                  </Form.Group>
+                  <Form.Group widths="equal">
+                    <Form.Input
+                      fluid
+                      label="subject"
+                      placeholder="subject"
+                      error={this.state.subject == ""}
+                      onChange={this.handleSubjectChange}
+                      value={this.state.subject}
+                    />
+                  </Form.Group>
+                  <Form.TextArea
+                    label="Message"
+                    placeholder="compose your message here..."
+                    style={{ minHeight: 100 }}
+                    onChange={this.handleContentChange}
+                    value={this.state.message}
+                    rows={5}
+                    error={this.state.message == ""}
+                  />
+                  {/* <Form.Field>
             <label>Sender ID</label>
             <input
               type="number"
@@ -139,8 +168,8 @@ class ComposeForm extends React.Component {
               placeholder="receiver id"
             />
           </Form.Field> */}
-            {/* <Form.Field> */}
-            {/* <label>Subject</label>
+                  {/* <Form.Field> */}
+                  {/* <label>Subject</label>
             <input
               type="text"
               value={this.state.subject}
@@ -150,21 +179,25 @@ class ComposeForm extends React.Component {
               // error={this.state.subject == ""}
             />
           </Form.Field> */}
-            <Form.Input
-              type="submit"
-              value="Submit"
-              disabled={
-                !(
-                  this.state.subject &&
-                  this.state.message &&
-                  this.state.senderId &&
-                  this.state.receiverId
-                )
-              }
-            />
-          </Form>
-          <br />
-        </Segment>
+                  <Form.Input
+                    type="submit"
+                    value="Submit"
+                    disabled={
+                      !(
+                        this.state.subject &&
+                        this.state.message &&
+                        this.state.senderId > 0 &&
+                        this.state.receiverId > 0
+                      )
+                    }
+                  />
+                </Form>
+                <br />
+              </Segment>
+            </Grid.Column>
+            {/* <Grid.Column></Grid.Column> */}
+          </Grid.Row>
+        </Grid>
       </React.Fragment>
     );
   }
@@ -172,9 +205,8 @@ class ComposeForm extends React.Component {
 
 const mapStateToProps = (state, props) => {
   return {
-    // register_status: state["authenticationForm"].get("register_status"),
-    // register_msg: state["authenticationForm"].get("register_msg"),
-    // employees: state["employees"].get("employees"),
+    submitFail: state["composeForm"].get("submitFail"),
+    submitSucc: state["composeForm"].get("submitSucc"),
   };
 };
 

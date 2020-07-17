@@ -1,6 +1,6 @@
 import React from "react";
 // import "./App.scss";
-import "bootstrap/dist/css/bootstrap.css";
+// import "bootstrap/dist/css/bootstrap.css";
 import { connect } from "react-redux";
 import AppActions from "./actions";
 import { withCookies } from "react-cookie";
@@ -59,12 +59,15 @@ class App extends React.Component {
           <div style={{ height: "7%" }}>
             <Menu fixed="top" inverted style={{ height: "7%" }}>
               <Menu.Item header as="a" href="/">
+                <Icon name="home" />
                 Herolo Full Stack Assignment
               </Menu.Item>
               <Menu.Item header as="a" href="/compose">
+                <Icon name="compose" />
                 Compose Email Page
               </Menu.Item>
               <Menu.Item header as="a" href="/manage">
+                <Icon name="mail" />
                 {/* <Image
                   size="mini"
                   src="favicon.ico"

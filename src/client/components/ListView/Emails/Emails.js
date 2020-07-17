@@ -1,9 +1,11 @@
 import React from "react";
 import { connect } from "react-redux";
 import EmailsActions from "./actions";
+import EmailsList from "./EmailsList";
 const dateFormat = require("dateformat");
 import {
   Grid,
+  Message,
   List,
   Tab,
   Segment,
@@ -33,16 +35,16 @@ class Emails extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      sentEmails: [],
-      receivedEmails: [],
       id: -1,
       remove_email_modal: false,
       chosenEmail: null,
       confirmOpen: false,
       confirmResult: "",
       confirmId: -1,
+      deleteFail: false,
+      deleteSucc: false,
     };
-    this.createMailList = this.createMailList.bind(this);
+    // this.createMailList = this.createMailList.bind(this);
     this.handleIdChange = this.handleIdChange.bind(this);
     this.getReceivedMessages = this.getReceivedMessages.bind(this);
     this.getSentMessages = this.getSentMessages.bind(this);
@@ -70,9 +72,6 @@ class Emails extends React.Component {
   };
 
   removeEmail() {
-    // console.log("removing email: ", event);
-    // this.closeRemoveEmailModal();
-
     return () => {
       this.setState({ confirmOpen: false });
       this.props.removeEmail(this.state.confirmId);
@@ -83,134 +82,95 @@ class Emails extends React.Component {
   getSentMessages = (id) =>
     this.props.emails.filter(filterReceivedMessages(id));
 
-  createMailList = (mails) => (
-    <List selection divided>
-      {mails.map((email, index) =>
-        // <List.Item key={index} onClick={this.openEditor(index)}>
-        email ? (
-          <List.Item key={index}>
-            <List.Icon name="mail" size="large" verticalAlign="middle" />
-            <List.Content>
-              <List.Header as="a">
-                <b>{email.subject}</b>
-              </List.Header>
-              <List.Description as="a">
-                from: <i>{email.senderId}</i>
-              </List.Description>
-              <List.Description as="a">
-                to: <i>{email.receiverId}</i>
-              </List.Description>
-
-              <List.Content as="a">
-                {email.message.length > 50
-                  ? email.message.slice(0, 50) + "..."
-                  : email.message}
-              </List.Content>
-            </List.Content>
-          </List.Item>
-        ) : (
-          []
-        )
-      )}
-    </List>
-  );
   render() {
-    const confirmShow = (id) => () =>
-      this.setState({ confirmOpen: true, confirmId: id });
     const handleConfirm = () =>
       this.setState({ confirmResult: "confirmed", confirmOpen: false });
     const handleCancel = () =>
       this.setState({ confirmResult: "cancelled", confirmOpen: false });
     return (
       <React.Fragment>
+        {this.props.deleteSucc ? (
+          <Message positive>
+            <Message.Header>Delete Completed Successfully</Message.Header>
+            <p>
+              Go to your <b>Compose Email Page</b> to add a new message.
+            </p>
+          </Message>
+        ) : (
+          []
+        )}
+        {this.props.deleteFail ? (
+          <Message negative>
+            <Message.Header>Deleting Message Failed</Message.Header>
+            <p>Please try again later.</p>
+          </Message>
+        ) : (
+          []
+        )}
         <div>
-          <Confirm
-            open={this.state.confirmOpen}
-            onCancel={handleCancel}
-            onConfirm={this.removeEmail()}
-          />
+          <Grid columns="three" centered>
+            <Grid.Row>
+              {/* <Grid.Column></Grid.Column> */}
+              <Grid.Column centered>
+                <Confirm
+                  content="Are you sure you want to delete this email?"
+                  size="mini"
+                  open={this.state.confirmOpen}
+                  onCancel={handleCancel}
+                  onConfirm={this.removeEmail()}
+                />
+              </Grid.Column>
+            </Grid.Row>
+          </Grid>
         </div>
-        <Form onSubmit={this.handleSubmit}>
-          <Form.Field>
-            <label>Insert ID</label>
-            <input
-              type="number"
-              value={this.state.id}
-              className="form-control"
-              onChange={this.handleIdChange}
-              placeholder="receiver id"
-            />
-          </Form.Field>
-          {/* <input type="submit" value="Submit" /> */}
-        </Form>
-        <Segment>
-          <Tab
-            panes={[
-              {
-                menuItem: "Received",
-                render: () => (
-                  <Tab.Pane>
-                    {this.createMailList(
-                      this.getReceivedMessages(this.state.id)
-                    )}
-                  </Tab.Pane>
-                ),
-              },
-              {
-                menuItem: "Sent",
-                render: () => (
-                  <Tab.Pane>
-                    {this.createMailList(this.getSentMessages(this.state.id))}
-                  </Tab.Pane>
-                ),
-              },
-            ]}
-          />
-          <List selection divided>
-            {this.props.emails.map((email, index) =>
-              // <List.Item key={index} onClick={this.openEditor(index)}>
-              email ? (
-                <List.Item key={index}>
-                  <List.Icon name="mail" size="large" verticalAlign="middle" />
-                  <List.Content>
-                    <List.Header as="a">
-                      <b>{email._id}</b>
-                    </List.Header>
-                    {/* <List.Description as="a">
-                    {board.sensorNum} available sensors
-                  </List.Description> */}
-                  </List.Content>
-                  <List.Content floated="right">
-                    <Button negative onClick={confirmShow(email._id)}>
-                      Remove
-                    </Button>
-                  </List.Content>
-                </List.Item>
-              ) : (
-                []
-              )
-            )}
-          </List>
-        </Segment>
-
-        {/* <Modal
-          show={this.state.remove_email_modal}
-          onHide={this.closeRemoveEmailModal}
-        >
-          <Modal.Header>Warning!</Modal.Header>
-          <Modal.Body>
-            <p>Are you sure you want to remove Email?</p>
-          </Modal.Body>
-          <Modal.Footer>
-            <Button.Group>
-              <Button onClick={this.closeRemoveEmailModal}>No</Button>
-              <Button.Or />
-              <Button positive onClick={this.removeEmail}>
-                Yes
-              </Button>
-            </Button.Group>
-          </Modal.Footer>
-        </Modal> */}
+        <Grid columns="three" divided centered>
+          <Grid.Row>
+            {/* <Grid.Column></Grid.Column> */}
+            <Grid.Column>
+              <Form onSubmit={this.handleSubmit}>
+                <Form.Field>
+                  <label>Insert ID</label>
+                  <input
+                    type="number"
+                    value={this.state.id}
+                    className="form-control"
+                    onChange={this.handleIdChange}
+                    placeholder="receiver id"
+                  />
+                </Form.Field>
+              </Form>
+              <Segment>
+                <Tab
+                  panes={[
+                    {
+                      menuItem: "Received",
+                      render: () => (
+                        <Tab.Pane>
+                          {EmailsList(
+                            this,
+                            this.getReceivedMessages(this.state.id)
+                          )}
+                        </Tab.Pane>
+                      ),
+                    },
+                    {
+                      menuItem: "Sent",
+                      render: () => (
+                        <Tab.Pane>
+                          {EmailsList(
+                            this,
+                            this.getSentMessages(this.state.id)
+                          )}
+                        </Tab.Pane>
+                      ),
+                    },
+                  ]}
+                />
+              </Segment>
+            </Grid.Column>
+            {/* <Grid.Column></Grid.Column> */}
+          </Grid.Row>
+        </Grid>
       </React.Fragment>
     );
   }
@@ -219,6 +179,8 @@ class Emails extends React.Component {
 const mapStateToProps = (state, props) => {
   return {
     emails: state["emails"].get("emails"),
+    deleteSucc: state["emails"].get("deleteSucc"),
+    deleteFail: state["emails"].get("deleteFail"),
   };
 };
 

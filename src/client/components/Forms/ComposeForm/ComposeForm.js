@@ -1,15 +1,5 @@
 import React from "react";
-import {
-  Grid,
-  List,
-  Segment,
-  Form,
-  TextArea,
-  Button,
-  Menu,
-  Input,
-  Message,
-} from "semantic-ui-react";
+import { Grid, Segment, Form, Message } from "semantic-ui-react";
 import { connect } from "react-redux";
 import ComposeFormActions from "./actions";
 
@@ -81,33 +71,30 @@ class ComposeForm extends React.Component {
   render() {
     return (
       <React.Fragment>
-        <Grid columns="three" divided centered>
+        <Grid columns="two" divided centered>
           <Grid.Row>
-            {/* <Grid.Column></Grid.Column> */}
             <Grid.Column>
+              {this.props.submitSucc ? (
+                <Message positive>
+                  <Message.Header>
+                    New Message Submitted Successfully
+                  </Message.Header>
+                  <p>
+                    Go to your <b>Manage Emails Page</b> to see your message.
+                  </p>
+                </Message>
+              ) : (
+                []
+              )}
+              {this.props.submitFail ? (
+                <Message negative>
+                  <Message.Header>New Message Submission Failed</Message.Header>
+                  <p>Please try again later.</p>
+                </Message>
+              ) : (
+                []
+              )}
               <Segment>
-                {this.props.submitSucc ? (
-                  <Message positive>
-                    <Message.Header>
-                      New Message Submitted Successfully
-                    </Message.Header>
-                    <p>
-                      Go to your <b>Manage Emails Page</b> to see your message.
-                    </p>
-                  </Message>
-                ) : (
-                  []
-                )}
-                {this.props.submitFail ? (
-                  <Message negative>
-                    <Message.Header>
-                      New Message Submission Failed
-                    </Message.Header>
-                    <p>Please try again later.</p>
-                  </Message>
-                ) : (
-                  []
-                )}
                 <Form onSubmit={this.handleSubmit}>
                   <Form.Group widths="equal">
                     <Form.Input
@@ -134,7 +121,7 @@ class ComposeForm extends React.Component {
                       fluid
                       label="subject"
                       placeholder="subject"
-                      error={this.state.subject == ""}
+                      error={this.state.subject === ""}
                       onChange={this.handleSubjectChange}
                       value={this.state.subject}
                     />
@@ -146,39 +133,8 @@ class ComposeForm extends React.Component {
                     onChange={this.handleContentChange}
                     value={this.state.message}
                     rows={5}
-                    error={this.state.message == ""}
+                    error={this.state.message === ""}
                   />
-                  {/* <Form.Field>
-            <label>Sender ID</label>
-            <input
-              type="number"
-              value={this.state.senderId}
-              className="form-control"
-              onChange={this.handleSenderIdChange}
-              placeholder="sender id"
-            />
-          </Form.Field>
-          <Form.Field>
-            <label>Receiver ID</label>
-            <input
-              type="number"
-              value={this.state.receiverId}
-              className="form-control"
-              onChange={this.handleReceiverIdChange}
-              placeholder="receiver id"
-            />
-          </Form.Field> */}
-                  {/* <Form.Field> */}
-                  {/* <label>Subject</label>
-            <input
-              type="text"
-              value={this.state.subject}
-              className="form-control"
-              onChange={this.handleSubjectChange}
-              placeholder="First name"
-              // error={this.state.subject == ""}
-            />
-          </Form.Field> */}
                   <Form.Input
                     type="submit"
                     value="Submit"
@@ -195,7 +151,6 @@ class ComposeForm extends React.Component {
                 <br />
               </Segment>
             </Grid.Column>
-            {/* <Grid.Column></Grid.Column> */}
           </Grid.Row>
         </Grid>
       </React.Fragment>

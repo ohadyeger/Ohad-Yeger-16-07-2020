@@ -2,26 +2,7 @@ import React from "react";
 import { connect } from "react-redux";
 import EmailsActions from "./actions";
 import EmailsList from "./EmailsList";
-const dateFormat = require("dateformat");
-import {
-  Grid,
-  Message,
-  List,
-  Tab,
-  Segment,
-  Form,
-  Modal,
-  TextArea,
-  Button,
-  Menu,
-  Input,
-  Confirm,
-} from "semantic-ui-react";
-
-function parseDate(str) {
-  var mdy = str.split("/");
-  return new Date(mdy[2], mdy[0] - 1, mdy[1]);
-}
+import { Grid, Message, Tab, Segment, Form, Confirm } from "semantic-ui-react";
 
 const filterReceivedMessages = (id) => (review) => review.receiverId == id;
 const filterSentMessages = (id) => (review) => review.senderId == id;
@@ -44,7 +25,6 @@ class Emails extends React.Component {
       deleteFail: false,
       deleteSucc: false,
     };
-    // this.createMailList = this.createMailList.bind(this);
     this.handleIdChange = this.handleIdChange.bind(this);
     this.getReceivedMessages = this.getReceivedMessages.bind(this);
     this.getSentMessages = this.getSentMessages.bind(this);
@@ -83,8 +63,6 @@ class Emails extends React.Component {
     this.props.emails.filter(filterReceivedMessages(id));
 
   render() {
-    const handleConfirm = () =>
-      this.setState({ confirmResult: "confirmed", confirmOpen: false });
     const handleCancel = () =>
       this.setState({ confirmResult: "cancelled", confirmOpen: false });
     return (
@@ -108,10 +86,9 @@ class Emails extends React.Component {
           []
         )}
         <div>
-          <Grid columns="three" centered>
+          <Grid>
             <Grid.Row>
-              {/* <Grid.Column></Grid.Column> */}
-              <Grid.Column centered>
+              <Grid.Column>
                 <Confirm
                   content="Are you sure you want to delete this email?"
                   size="mini"
@@ -123,7 +100,7 @@ class Emails extends React.Component {
             </Grid.Row>
           </Grid>
         </div>
-        <Grid columns="three" divided centered>
+        <Grid columns="one" divided centered>
           <Grid.Row>
             {/* <Grid.Column></Grid.Column> */}
             <Grid.Column>
@@ -146,10 +123,12 @@ class Emails extends React.Component {
                       menuItem: "Received",
                       render: () => (
                         <Tab.Pane>
-                          {EmailsList(
-                            this,
-                            this.getReceivedMessages(this.state.id)
-                          )}
+                          {this.getReceivedMessages(this.state.id)[0]
+                            ? EmailsList(
+                                this,
+                                this.getReceivedMessages(this.state.id)
+                              )
+                            : "no received messages to show"}
                         </Tab.Pane>
                       ),
                     },
@@ -157,10 +136,12 @@ class Emails extends React.Component {
                       menuItem: "Sent",
                       render: () => (
                         <Tab.Pane>
-                          {EmailsList(
-                            this,
-                            this.getSentMessages(this.state.id)
-                          )}
+                          {this.getSentMessages(this.state.id)[0]
+                            ? EmailsList(
+                                this,
+                                this.getSentMessages(this.state.id)
+                              )
+                            : "no sent messages to show"}
                         </Tab.Pane>
                       ),
                     },
@@ -168,7 +149,6 @@ class Emails extends React.Component {
                 />
               </Segment>
             </Grid.Column>
-            {/* <Grid.Column></Grid.Column> */}
           </Grid.Row>
         </Grid>
       </React.Fragment>

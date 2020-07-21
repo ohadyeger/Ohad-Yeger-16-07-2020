@@ -1,50 +1,60 @@
 import React from "react";
 import {
-  Accordion,
   Icon,
   Button,
   Segment,
   Label,
-  Item,
   Breadcrumb,
-  Container,
+  Transition,
   Divider,
-  Message,
-  Grid,
+  List,
 } from "semantic-ui-react";
-// const handleClick = (index) => (state.accordionIndex = index);
+
 const confirmShow = (id, emailComponent) => () =>
   emailComponent.setState({ confirmOpen: true, confirmId: id });
+
 const EmailsList = (emailComponent, emails) => (
   <Segment>
-    {/* <Accordion styled fluid> */}
-    {emails.map((email, index) =>
-      email ? (
-        <Container key={index}>
-          <Breadcrumb>
-            <Label>
-              <Icon name="mail" />
-              Subject: {email.subject}
-            </Label>
-            <Label>From: {email.senderId}</Label>
-            <Label>To: {email.receiverId}</Label>
-            <Button
-              size="mini"
-              negative
-              onClick={confirmShow(email._id, emailComponent)}
-            >
-              Remove
-            </Button>
-          </Breadcrumb>
+    <Transition.Group
+      as={List}
+      duration={200}
+      divided
+      size="huge"
+      verticalAlign="middle"
+    >
+      {emails.map((email, index) =>
+        email ? (
+          <List.Item key={index}>
+            <List.Content>
+              <Breadcrumb>
+                <Label>
+                  <Icon name="mail" />
+                  Subject: {email.subject}
+                </Label>
+                <Label>From: {email.senderId}</Label>
+                <Label>To: {email.receiverId}</Label>
+                <Label>
+                  Date: {new Date(email.creationDate).toUTCString()}
+                </Label>
+                <Button
+                  size="mini"
+                  negative
+                  onClick={confirmShow(email._id, emailComponent)}
+                >
+                  Remove
+                </Button>
+              </Breadcrumb>
 
-          <p>Message:</p>
-          <Segment>{email.message}</Segment>
-          <Divider section />
-        </Container>
-      ) : (
-        []
-      )
-    )}
+              <p>Message:</p>
+              <Segment>{email.message}</Segment>
+              <Divider section />
+            </List.Content>
+          </List.Item>
+        ) : (
+          []
+        )
+      )}
+    </Transition.Group>
   </Segment>
 );
 export default EmailsList;

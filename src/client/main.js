@@ -8,10 +8,10 @@ import App from "./components/App/index";
 import reducers from "./reducers";
 import Sagas from "./sagas";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
-import "react-notifications/lib/notifications.css";
-import "primereact/resources/themes/nova-light/theme.css";
-import "primereact/resources/primereact.min.css";
-import "primeicons/primeicons.css";
+// import "react-notifications/lib/notifications.css";
+// import "primereact/resources/themes/nova-light/theme.css";
+// import "primereact/resources/primereact.min.css";
+// import "primeicons/primeicons.css";
 // import "bootstrap/dist/css/bootstrap.min.css";
 
 //create saga middleware
@@ -25,12 +25,10 @@ sagaMiddleware.run(Sagas);
 // Render the main component into the dom
 
 ReactDOM.render(
-  <CookiesProvider>
-    <Provider store={store}>
-      <Router>
-        <App />
-      </Router>
-    </Provider>
-  </CookiesProvider>,
+  <Provider store={store}>
+    <Router>
+      <App />
+    </Router>
+  </Provider>,
   document.getElementById("app")
 );

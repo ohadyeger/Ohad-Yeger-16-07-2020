@@ -3,7 +3,6 @@ const express = require("express");
 const mongoose = require("mongoose");
 const fs = require("fs");
 const path = require("path");
-const cookieParser = require("cookie-parser");
 const dbName = "soos-dev";
 // const UserModel = require("./model/User");
 
@@ -31,7 +30,6 @@ app.use(bodyParser.json({ limit: "50mb", extended: true }));
 app.use(bodyParser.urlencoded({ extended: false })); //handle body requests
 console.log(__dirname);
 app.use(express.static(path.join(__dirname, "public")));
-app.use(cookieParser());
 
 // Add backend api routes
 fs.readdirSync(__dirname + "/api").forEach((file) => {
